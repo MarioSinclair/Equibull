@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import '../../styles/auth.css';
 
 export default function SignIn() {
 
@@ -58,12 +59,6 @@ export default function SignIn() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            style={{
-              width: '100%',
-              padding: 10,
-              borderRadius: 5,
-              border: '1px solid #ccc'
-            }}
           />
           </label>
 

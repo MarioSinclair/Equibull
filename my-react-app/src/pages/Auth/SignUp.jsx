@@ -1,7 +1,7 @@
-<<<<<<< Updated upstream
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import '../../styles/auth.css';
 
 
 export default function SignUp() {
@@ -37,13 +37,6 @@ export default function SignUp() {
     }
   }
 
-=======
-import React from "react";
-import { Link } from "react-router-dom";
-import "../../styles/Auth.css";
-
-export default function SignUp() {
->>>>>>> Stashed changes
   return (
     <section className="auth-container">
       <div className="auth-card">
@@ -52,7 +45,6 @@ export default function SignUp() {
           Join EquiBull and get your personalized mortgage readiness plan.
         </p>
 
-<<<<<<< Updated upstream
         <form className="auth-form" onSubmit={handleSubmit}>
 
           <label>
@@ -63,22 +55,10 @@ export default function SignUp() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-=======
-        <form className="auth-form">
-          <label>
-            Full Name
-            <input type="text" placeholder="John Doe" required />
-          </label>
-
-          <label>
-            Email
-            <input type="email" placeholder="you@example.com" required />
->>>>>>> Stashed changes
           </label>
 
           <label>
             Password
-<<<<<<< Updated upstream
             <input
             type="password"
             value={password}
@@ -102,27 +82,16 @@ export default function SignUp() {
             type="submit"
           >
             {loading ? 'Creating account...' : 'Sign Up'}
-=======
-            <input type="password" placeholder="Create a password" required />
-          </label>
-
-          <button type="submit" className="btn-primary full-width">
-            Sign Up
->>>>>>> Stashed changes
           </button>
         </form>
 
         <p className="auth-footer">
           Already have an account?{" "}
-          <Link to="/login" className="auth-link">
+          <Link to="/SignIn" className="auth-link">
             Log in
           </Link>
         </p>
       </div>
     </section>
   );
-<<<<<<< Updated upstream
 }
-=======
-}
->>>>>>> Stashed changes
