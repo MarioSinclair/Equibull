@@ -92,3 +92,74 @@
 .auth-link:hover {
   text-decoration: underline;
 }
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.5rem 0;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.auth-divider span {
+  background: #0b0f14;
+  padding: 0 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-divider::before {
+  content: "";
+  position: absolute;
+  width: 20%;
+  height: 1px;
+  background: #1e2630;
+}
+
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #fff;
+  color: #444;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s ease;
+}
+
+.google-btn img {
+  width: 18px;
+  height: 18px;
+}
+
+.google-btn:hover {
+  background: #f7f7f7;
+}
+
+.auth-form button {
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+  border-radius: 6px;
+  background-color: #2563eb; /* blue */
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.auth-form button:hover:not(:disabled) {
+  background-color: #1e40af; /* darker blue on hover */
+}
+
+.auth-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
