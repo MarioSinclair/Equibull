@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 
 export default function SignIn() {
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -26,23 +27,17 @@ export default function SignIn() {
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: '50px auto', padding: 20 }}>
-      <h2>Sign In</h2>
-      {error && (
-        <div style={{ 
-          padding: 10, 
-          background: '#fee', 
-          color: '#c00', 
-          borderRadius: 5, 
-          marginBottom: 15 
-        }}>
-          {error}
-        </div>
-      )}
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 15 }}>
-          <label style={{ display: 'block', marginBottom: 5 }}>Email</label>
-          <input
+    <section className="auth-container">
+      <div className="auth-card">
+        <h1 className="auth-title">Welcome Back</h1>
+        <p className="auth-subtitle">
+          Log in to continue your journey toward homeownership.
+        </p>
+
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <label>
+            Email
+            <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -54,10 +49,11 @@ export default function SignIn() {
               border: '1px solid #ccc'
             }}
           />
-        </div>
-        <div style={{ marginBottom: 15 }}>
-          <label style={{ display: 'block', marginBottom: 5 }}>Password</label>
-          <input
+          </label>
+
+          <label>
+            Password
+            <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -69,28 +65,33 @@ export default function SignIn() {
               border: '1px solid #ccc'
             }}
           />
-        </div>
-        <button
-          disabled={loading}
-          type="submit"
-          style={{
-            width: '100%',
-            padding: 10,
-            background: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: 5,
-            cursor: loading ? 'not-allowed' : 'pointer',
-            opacity: loading ? 0.6 : 1
-          }}
-        >
-          {loading ? 'Signing in...' : 'Sign In'}
-        </button>
-      </form>
-      <div style={{ marginTop: 15, textAlign: 'center' }}>
-        Don't have an account? <Link to="/signup">Sign Up</Link>
+          </label>
+
+          <button
+            disabled={loading}
+            type="submit"
+            style={{
+              width: '100%',
+              padding: 10,
+              background: '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: 5,
+              cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.6 : 1
+            }}
+          >
+            {loading ? 'Signing in...' : 'Sign In'}
+          </button>
+        </form>
+
+        <p className="auth-footer">
+          Don’t have an account?{" "}
+          <Link to="/signup" className="auth-link">
+            Sign up
+          </Link>
+        </p>
       </div>
-    </div>
+    </section>
   );
 }
-
