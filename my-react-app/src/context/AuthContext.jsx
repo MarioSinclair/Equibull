@@ -1,14 +1,16 @@
-// Auth Context Provider
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  signOut, 
-  onAuthStateChanged 
-} from 'firebase/auth';
-import { auth } from '../config/firebase';
+// src/context/AuthContext.jsx
+import React, { createContext, useContext, useState, useEffect } from "react";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
+import { auth } from "../config/firebase";
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -19,32 +21,40 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [idToken, setIdToken] = useState(null);
 
-  // Sign up function
-  async function signup(email, password) {
+  // Email/Password — Sign up
+  function signup(email, password) {
     return createUserWithEmailAndPassword(auth, email, password);
   }
 
-  // Login function
-  async function login(email, password) {
+  // Email/Password — Login
+  function login(email, password) {
     return signInWithEmailAndPassword(auth, email, password);
   }
 
-  // Logout function
+  // Logout
   async function logout() {
     setIdToken(null);
     return signOut(auth);
   }
 
+  // Google Sign-in
+  function googleSignIn() {
+    const provider = new GoogleAuthProvider();
+    // Optional: always show account chooser
+    provider.setCustomParameters({ prompt: "select_account" });
+    return signInWithPopup(auth, provider);
+  }
+
   // Get ID token for API calls
-  async function getIdToken() {
+  async function getIdToken(forceRefresh = false) {
     if (currentUser) {
-      return await currentUser.getIdToken();
+      return currentUser.getIdToken(forceRefresh);
     }
     return null;
   }
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       if (user) {
         const token = await user.getIdToken();
@@ -54,8 +64,7 @@ export function AuthProvider({ children }) {
       }
       setLoading(false);
     });
-
-    return unsubscribe;
+    return unsub;
   }, []);
 
   const value = {
@@ -64,7 +73,8 @@ export function AuthProvider({ children }) {
     signup,
     login,
     logout,
-    getIdToken
+    googleSignIn, // <-- expose this
+    getIdToken,
   };
 
   return (
@@ -73,4 +83,3 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
-
