@@ -9,6 +9,7 @@ import Landing from "../pages/Landing.jsx";
 import ConnectRent from "../pages/Onboarding/ConnectRent.jsx";
 import ConnectBank from "../pages/Onboarding/ConnectBank.jsx";
 import CreditConsent from "../pages/Onboarding/CreditConsent.jsx";
+import ChatBot from "../pages/ChatBot.jsx";
 
 const router = createBrowserRouter([
   {path: "/", element: <Landing />},
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
   {path: "onboarding/connect-rent", element: <ConnectRent />},
   {path: "/onboarding/connect-bank", element: <ConnectBank />},
   {path: "/onboarding/credit-consent", element: <CreditConsent />},
+  {path: "/chatbot", element: <ChatBot />},
 
 ]);
 
