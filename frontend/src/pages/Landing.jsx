@@ -17,7 +17,6 @@ function Landing() {
             <li><a href="#features">Features</a></li>
             <li><a href="#how-it-works">How It Works</a></li>
             <li><a href="#about">About</a></li>
-            <li><Link to="/chat">Chat with Equibull</Link></li>
             <li>
               <Link to="/SignIn" className="btn-primary">Get Started</Link>
             </li>
