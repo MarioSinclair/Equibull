@@ -1,83 +1,86 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { GoogleGenAI } from "@google/genai";
-import '../styles/ChatBot.css';
+import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import "../styles/ChatBot.css";
 
+// Read the key from Vite env
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-const ai = new GoogleGenAI({apiKey: apiKey});
 
+// Helpful dev log if the key is missing
+if (!apiKey) {
+  // eslint-disable-next-line no-console
+  console.error(
+    "VITE_GEMINI_API_KEY is missing. Create .env.local with VITE_GEMINI_API_KEY=YOUR_KEY and restart the dev server."
+  );
+}
+
+// Correct SDK usage
+const genAI = new GoogleGenerativeAI(apiKey);
+const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
+  systemInstruction:
+    "You are Equibull, a friendly and knowledgeable mortgage readiness assistant. Help users understand mortgage requirements, credit scores, down payments, debt-to-income ratios, and the home buying process. Be conversational, supportive, and provide actionable advice. Keep responses concise (2–4 sentences) unless more detail is requested."
+});
 
 export default function ChatBot() {
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: "Hi! I'm Equibull, your mortgage readiness assistant. How can I help you today?",
-      sender: 'bot',
+      text:
+        "Hi! I'm Equibull, your mortgage readiness assistant. How can I help you today?",
+      sender: "bot",
       timestamp: new Date()
     }
   ]);
-  
-  const [inputMessage, setInputMessage] = useState('');
+  const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
   const { currentUser } = useAuth();
 
-  // Auto scroll to bottom when new messages arrive
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
+  // Auto-scroll
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    
-    if (!inputMessage.trim()) return;
+    const messageText = inputMessage.trim();
+    if (!messageText) return;
 
-    // Save the message before clearing input
-    const messageText = inputMessage;
-
-    // Add user message
     const userMessage = {
-      id: messages.length + 1,
+      id: crypto.randomUUID?.() ?? Date.now(),
       text: messageText,
-      sender: 'user',
+      sender: "user",
       timestamp: new Date()
     };
-
-    setMessages(prev => [...prev, userMessage]);
-    setInputMessage('');
+    setMessages((prev) => [...prev, userMessage]);
+    setInputMessage("");
     setIsTyping(true);
 
     try {
-      // Call backend API
-      const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: messageText,
-        config: {
-          systemInstruction: "You are Equibull, a friendly and knowledgeable mortgage readiness assistant. Help users understand mortgage requirements, credit scores, down payments, debt-to-income ratios, and the home buying process. Be conversational, supportive, and provide actionable advice. Keep responses concise (2-4 sentences) unless more detail is requested.",
-        },
-      });
-      
-      setMessages(prev => [...prev, {
-        id: messages.length + 2,
-        text: response.text,
-        sender: 'bot',
+      // Simple, correct call pattern
+      const result = await model.generateContent(messageText);
+      const text = result.response?.text?.() ?? "Sorry, I couldn’t generate a reply.";
+      const botMessage = {
+        id: crypto.randomUUID?.() ?? Date.now() + 1,
+        text,
+        sender: "bot",
         timestamp: new Date()
-      }]);
+      };
+      setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      console.error('Error getting AI response:', error);
-      
-      // Fallback error message
-      setMessages(prev => [...prev, {
-        id: messages.length + 2,
-        text: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment.",
-        sender: 'bot',
-        timestamp: new Date()
-      }]);
+      console.error("Error getting AI response:", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID?.() ?? Date.now() + 2,
+          text:
+            "I'm sorry, I'm having trouble connecting right now. Please try again in a moment.",
+          sender: "bot",
+          timestamp: new Date()
+        }
+      ]);
     } finally {
       setIsTyping(false);
     }
@@ -89,10 +92,6 @@ export default function ChatBot() {
     "Calculate affordability",
     "Improve my credit"
   ];
-
-  const handleQuickAction = (action) => {
-    setInputMessage(action);
-  };
 
   return (
     <div className="chatbot-page">
@@ -120,33 +119,33 @@ export default function ChatBot() {
         </div>
       </header>
 
-      {/* Chat Container */}
+      {/* Chat */}
       <div className="chat-container">
         <div className="messages-area">
-          {messages.map((message) => (
+          {messages.map((m) => (
             <div
-              key={message.id}
-              className={`message ${message.sender === 'user' ? 'user-message' : 'bot-message'}`}
+              key={m.id}
+              className={`message ${m.sender === "user" ? "user-message" : "bot-message"}`}
             >
               <div className="message-bubble">
-                <p>{message.text}</p>
+                <p>{m.text}</p>
                 <span className="message-time">
-                  {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  {m.timestamp.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                  })}
                 </span>
               </div>
             </div>
           ))}
-          
+
           {isTyping && (
             <div className="message bot-message">
               <div className="message-bubble typing-indicator">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
               </div>
             </div>
           )}
-          
           <div ref={messagesEndRef} />
         </div>
 
@@ -155,20 +154,20 @@ export default function ChatBot() {
           <div className="quick-actions">
             <p className="quick-actions-label">Quick questions:</p>
             <div className="quick-actions-buttons">
-              {quickActions.map((action, index) => (
+              {quickActions.map((qa) => (
                 <button
-                  key={index}
+                  key={qa}
                   className="quick-action-btn"
-                  onClick={() => handleQuickAction(action)}
+                  onClick={() => setInputMessage(qa)}
                 >
-                  {action}
+                  {qa}
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* Input Area */}
+        {/* Input */}
         <div className="input-area">
           <form onSubmit={handleSendMessage} className="input-form">
             <input
@@ -190,11 +189,10 @@ export default function ChatBot() {
             </button>
           </form>
           <p className="input-disclaimer">
-            EquiBot provides general guidance. For personalized advice, consult with our mortgage advisors.
+            EquiBulls provides general guidance. For personalized advice, consult with our mortgage advisors.
           </p>
         </div>
       </div>
     </div>
   );
 }
-

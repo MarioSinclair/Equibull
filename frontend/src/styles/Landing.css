@@ -380,4 +380,61 @@
     grid-template-columns: 1fr;
     gap: 2rem;
   }
+  .typing-text {
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 3px solid #fff;
+  font-size: 2.5rem;
+  letter-spacing: -0.5px;
+}
+/* Keep headline on one line and show a blinking caret */
+.typing-text {
+  white-space: nowrap;
+  overflow: hidden;
+}
+.typing-caret {
+  display: inline-block;
+  margin-left: 2px;
+}
+/* Base gradient (yours may already exist) */
+.hero {
+  position: relative;
+  /* example background; keep your own if you have it */
+  background: linear-gradient(135deg, #5b7cf3 0%, #7a6be0 50%, #7b5fd1 100%);
+  --mx: 50%;
+  --my: 50%;
+  --glow-o: 0;               /* opacity controlled by JS */
+  --glow-size: 600px;        /* radius */
+  --glow-strength: 0.28;     /* brightness of the glow */
+}
+
+/* Cursor-following glow overlay */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  /* The trick: a radial gradient that brightens colors under the cursor */
+  background:
+    radial-gradient(
+      circle var(--glow-size) at var(--mx) var(--my),
+      rgba(255,255,255,var(--glow-strength)),
+      rgba(255,255,255,0) 55%
+    );
+
+  mix-blend-mode: screen;     /* brightens underlying gradient */
+  opacity: var(--glow-o);
+  transition: opacity 180ms ease;
+}
+
+/* Optional: subtle soften + mobile fallback */
+@media (max-width: 768px) {
+  .hero::before { --glow-size: 420px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero::before { transition: none; }
+}
+
+
 }
